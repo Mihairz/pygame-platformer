@@ -242,6 +242,13 @@ while gameIsRunning:
             current_level = Level(current_level_number,
                                   SCREEN_WIDTH, SCREEN_HEIGHT)
             current_level.reset_player_position(player)
+            
+    if pygame.sprite.spritecollideany(player, current_level.enemy_group):
+        # Reset level 4
+        current_level = Level(4, SCREEN_WIDTH, SCREEN_HEIGHT)
+        player.rect.center = (100, SCREEN_HEIGHT - 150)  # Reset player position
+        score = 15  # Subtract collected coins from score
+
 
     # Drawing
     current_level.draw(screen)

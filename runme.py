@@ -1,16 +1,14 @@
 import pygame
 from PIL import Image
 import ctypes  # For Windows icon manipulation
-import random
 
 from ground import Ground
-from coin import Coin, display_score, display_winner
+from coin import display_score
 from level import Level
 
 
 # Initialize Pygame
 pygame.init()
-
 
 background_music = pygame.mixer.Sound("assets/bg-song.mp3")
 background_music.play(-1)
@@ -66,10 +64,6 @@ coin_image = load_gif("assets/coin-gif.gif")
 coin_sound = pygame.mixer.Sound("assets/coin-wav.wav")
 coin_sound.set_volume(0.2)
 
-background_image = pygame.image.load("assets/background.jpg")
-background_image = pygame.transform.scale(
-    background_image, (SCREEN_WIDTH, SCREEN_HEIGHT))
-
 
 class Player(pygame.sprite.Sprite):
 
@@ -95,6 +89,8 @@ class Player(pygame.sprite.Sprite):
 
         self.speed_x = 0
         self.speed_y = 0
+        
+        self.current_platform = None
 
     def update(self):
 
@@ -142,26 +138,25 @@ class Player(pygame.sprite.Sprite):
             self.image = self.frames[self.current_frame]  # Update image
             self.last_update = now
 
-        # Check if the player is on the ground (platform collision)
+        # Check if the player is on the ground or platforms
+        self.on_ground = False
         if self.rect.colliderect(ground.ground_rect) and self.speed_y > 0:
-            self.rect.bottom = ground.ground_rect.top  # Land on the platform
-            self.speed_y = 0  # Stop substracting y
+            self.rect.bottom = ground.ground_rect.top
+            self.speed_y = 0
             self.on_ground = True
         else:
-            self.on_ground = False  # In the air, not on the platform
+            for platform in current_level.platforms:
+                if self.rect.colliderect(platform.ground_rect) and self.speed_y > 0:
+                    self.rect.bottom = platform.ground_rect.top
+                    self.speed_y = 0
+                    self.on_ground = True
+                    break
+                
 
-
-# coins = pygame.sprite.Group()
 
 COINS_MIN_X = 30
 COINS_Y = 700
 COINS_NUMBER = 5
-
-# for _ in range(COINS_NUMBER):  # Create 5 coins
-#     x = random.randint(COINS_MIN_X, SCREEN_WIDTH - 30)
-#     y = COINS_Y
-#     coin = Coin(coin_image, x, y)
-#     coins.add(coin)
 
 score = 0
 
@@ -222,6 +217,7 @@ while gameIsRunning:
     # Updates
     handle_input(player)
     player_sprites.update()
+    current_level.update()
     current_level.coins.update()
 
     # Gathering coins
@@ -242,10 +238,9 @@ while gameIsRunning:
 
     # Drawing
     current_level.draw(screen)
-    screen.blit(background_image, (0, 0))
-    screen.blit(ground.image, ground.rect)
     screen.blit(player.image, player.rect)
     current_level.coins.draw(screen)
+    current_level.platforms.draw(screen)
     display_score(screen, SCREEN_WIDTH, score)
     display_commands(screen)
 

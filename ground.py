@@ -19,13 +19,17 @@ class Ground(pygame.sprite.Sprite):
         self.direction = 1  # 1 for forward, -1 for backward
 
     def update(self):
+        # Update the platform's main rectangle based on movement type
         if self.move_type == "horizontal":
             self.rect.x += self.move_speed * self.direction
-            # Reverse direction if out of range
-            if abs(self.rect.x - self.start_pos[0]) > self.move_range:
-                self.direction *= -1
+        if abs(self.rect.x - self.start_pos[0]) > self.move_range:
+            self.direction *= -1
         elif self.move_type == "vertical":
             self.rect.y += self.move_speed * self.direction
-            # Reverse direction if out of range
-            if abs(self.rect.y - self.start_pos[1]) > self.move_range:
-                self.direction *= -1
+        if abs(self.rect.y - self.start_pos[1]) > self.move_range:
+            self.direction *= -1
+
+        # Update the ground rectangle to match the platform's new position
+        self.ground_rect.x = self.rect.x
+        self.ground_rect.y = self.rect.y + self.rect.height - self.ground_rect.height
+

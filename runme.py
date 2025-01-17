@@ -140,6 +140,7 @@ class Player(pygame.sprite.Sprite):
 
         # Check if the player is on the ground or platforms
         self.on_ground = False
+        
         if self.rect.colliderect(ground.ground_rect) and self.speed_y > 0:
             self.rect.bottom = ground.ground_rect.top
             self.speed_y = 0
@@ -150,7 +151,13 @@ class Player(pygame.sprite.Sprite):
                     self.rect.bottom = platform.ground_rect.top
                     self.speed_y = 0
                     self.on_ground = True
-                    break
+                     # If the platform is moving, adjust the player's position
+                    if platform.move_type == "horizontal":
+                         self.rect.x += platform.move_speed * platform.direction
+                    elif platform.move_type == "vertical":
+                        self.rect.y += platform.move_speed * platform.direction
+
+                    break  # Stop checking once we've landed
                 
 
 
@@ -243,7 +250,6 @@ while gameIsRunning:
     current_level.platforms.draw(screen)
     display_score(screen, SCREEN_WIDTH, score)
     display_commands(screen)
-
 
     # Refresh screen
     pygame.display.flip()

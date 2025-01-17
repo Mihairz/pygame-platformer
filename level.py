@@ -25,10 +25,10 @@ class Level:
             platform2 = Ground(1200, screen_height - 200, 200, 20, self.platform_image, 20)
             self.platforms.add(platform1, platform2)
         if level_number == 3:
-            moving_platform_h = Ground(200, screen_height - 300, 200, 20, self.platform_image, 20,
-                                       move_type="horizontal", move_range=300, move_speed=2)
+            moving_platform_h = Ground(200, screen_height - 300, 250, 20, self.platform_image, 20,
+                                       move_type="horizontal", move_range=150, move_speed=2)
             moving_platform_v = Ground(600, screen_height - 500, 200, 20, self.platform_image, 20,
-                                       move_type="vertical", move_range=200, move_speed=2)
+                                       move_type="vertical", move_range=150, move_speed=2)
 
             self.platforms.add(moving_platform_h, moving_platform_v)
 

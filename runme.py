@@ -237,7 +237,7 @@ while gameIsRunning:
    # Check if all coins are collected
     if len(current_level.coins) == 0:
         # Player must move to the right edge to proceed to the next level
-        if player.rect.right >= SCREEN_WIDTH:
+        if player.rect.right >= SCREEN_WIDTH and current_level.level_number < 4:
             current_level_number += 1
             current_level = Level(current_level_number,
                                   SCREEN_WIDTH, SCREEN_HEIGHT)

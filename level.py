@@ -12,6 +12,7 @@ class Level:
         self.level_number = level_number
         self.screen_width = screen_width
         self.screen_height = screen_height
+        self.winner = False
 
         self.ground_image = pygame.image.load("assets/ground.png")
         self.ground_image = pygame.transform.scale(
@@ -106,8 +107,19 @@ class Level:
             self.coins.add(coin)
 
         # Load level-specific background (optional)
-        self.background_image = pygame.image.load(
-            "assets/background.jpg")
+        match (level_number):
+            case 1:
+                self.background_image = pygame.image.load("assets/background.jpg")
+            case 2:
+                self.background_image = pygame.image.load("assets/background2.jpg")
+            case 3:
+                self.background_image = pygame.image.load("assets/background3.jpg")
+            case 4:
+                self.background_image = pygame.image.load("assets/background4.jpg")
+            case _:
+                self.background_image = pygame.image.load("assets/background.jpg")
+
+
         self.background_image = pygame.transform.scale(
             self.background_image, (screen_width, screen_height))
         
@@ -122,21 +134,31 @@ class Level:
         self.coins.draw(screen)
         self.enemy_group.draw(screen)
         
+        if self.winner and self.level_number == 4:
+            font = pygame.font.Font(None, 74)
+            text = font.render("You Win!", True, (255, 255, 0))
+            text_rect = text.get_rect(center=(self.screen_width // 2, self.screen_height // 2))
+            screen.blit(text, text_rect)
+        
     def update(self):
         self.platforms.update()  # Update platform movements
         
-        # Spawn an enemy every 2 seconds
-        self.enemy_spawn_timer += 2  # Add delta time or frame interval
-        if self.enemy_spawn_timer >= 2000:  # 2000ms = 2 seconds
-            enemy = Enemy(self.screen_width, self.screen_height - 120, 40, 40, speed=3)
-            self.enemy_group.add(enemy)
-            self.enemy_spawn_timer = 0  # Reset the timer
-
+        if not self.winner and self.level_number == 4:
+            self.enemy_spawn_timer += 1  # Add delta time or frame interval
+            
+            if self.enemy_spawn_timer >= 100:  # 2000ms = 2 seconds
+                enemy = Enemy(self.screen_width, self.screen_height - 120, 40, 40, speed=3)
+                self.enemy_group.add(enemy)
+                self.enemy_spawn_timer = 0  # Reset the timer
          # Update enemies
         self.enemy_group.update()
+        
          # Handle coin animations (if animated)
         for coin in self.coins:
             coin.update()
+        if len(self.coins) == 0:
+            self.winner = True
+            self.enemy_group.empty()
 
 
     def reset_player_position(self, player):

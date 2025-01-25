@@ -257,6 +257,13 @@ while gameIsRunning:
     current_level.platforms.draw(screen)
     display_score(screen, SCREEN_WIDTH, score)
     display_commands(screen)
+    
+    # Draw winner text last if applicable
+    if current_level.winner and current_level.level_number == 4:
+        font = pygame.font.Font(None, 72)  # Adjust the font size as needed
+        winner_text = font.render("You Win!", True, (255, 255, 0))  # Bright yellow text
+        text_rect = winner_text.get_rect(center=(SCREEN_WIDTH // 2, SCREEN_HEIGHT // 2))
+        screen.blit(winner_text, text_rect)
 
     # Refresh screen
     pygame.display.flip()

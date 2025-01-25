@@ -134,12 +134,6 @@ class Level:
         self.coins.draw(screen)
         self.enemy_group.draw(screen)
         
-        if self.winner and self.level_number == 4:
-            font = pygame.font.Font(None, 74)
-            text = font.render("You Win!", True, (255, 255, 0))
-            text_rect = text.get_rect(center=(self.screen_width // 2, self.screen_height // 2))
-            screen.blit(text, text_rect)
-        
     def update(self):
         self.platforms.update()  # Update platform movements
         

@@ -141,7 +141,7 @@ class Level:
             self.enemy_spawn_timer += 1  # Add delta time or frame interval
             
             if self.enemy_spawn_timer >= 100:  # 2000ms = 2 seconds
-                enemy = Enemy(self.screen_width, self.screen_height - 120, 40, 40, speed=3)
+                enemy = Enemy(self.screen_width, self.screen_height - 220, speed=3)
                 self.enemy_group.add(enemy)
                 self.enemy_spawn_timer = 0  # Reset the timer
          # Update enemies

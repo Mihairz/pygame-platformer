@@ -18,9 +18,9 @@ pygame.display.set_icon(icon)
 
 # Set the taskbar icon (Windows only)
 ctypes.windll.shell32.SetCurrentProcessExplicitAppUserModelID(
-    "fils_giss_move_sprite_lab")
+    "GISS Final Project")
 # Set the caption to make sure Windows recognizes the icon change
-pygame.display.set_caption("Move Sprite Lab")
+pygame.display.set_caption("GISS Final Project")
 
 
 # Screen dimensions
@@ -33,6 +33,8 @@ WALK_SPD = 5
 RUN_SPD = 7
 JUMP_STRENGTH = -12
 GRAVITY = 0.5
+
+score = 0
 
 
 # Function to load GIF and extract frames
@@ -159,15 +161,6 @@ class Player(pygame.sprite.Sprite):
 
                     break  # Stop checking once we've landed
                 
-
-
-COINS_MIN_X = 30
-COINS_Y = 700
-COINS_NUMBER = 5
-
-score = 0
-
-
 # Handle input
 def handle_input(player):
     keys = pygame.key.get_pressed()
@@ -194,17 +187,14 @@ def display_commands(screen):
     font = pygame.font.Font(None, 36)
     text = 'Move with arrow keys, jump with space, run with z + arrow key. Collect all the coins and move to the right edge.'
     
-    # Render the main text
     main_text = font.render(text, True, (255, 255, 255))
     
-    # Render the stroke (black text) with offsets
-    stroke_color = (0, 0, 0)  # Black
-    offsets = [(-1, -1), (-1, 1), (1, -1), (1, 1)]  # Top-left, top-right, bottom-left, bottom-right
+    stroke_color = (0, 0, 0)
+    offsets = [(-1, -1), (-1, 1), (1, -1), (1, 1)]
     for offset in offsets:
         stroke_text = font.render(text, True, stroke_color)
         screen.blit(stroke_text, (50 + offset[0], 10 + offset[1]))
     
-    # Draw the main text on top
     screen.blit(main_text, (50, 10))
 
 
@@ -216,13 +206,8 @@ ground = Ground(0, 800, SCREEN_WIDTH, 100, ground_image, 28)
 current_level_number = 1
 current_level = Level(current_level_number, SCREEN_WIDTH, SCREEN_HEIGHT)
 
-
-ground_sprites = pygame.sprite.Group()
 player_sprites = pygame.sprite.Group()
-
-ground_sprites.add(ground)
 player_sprites.add(player)
-
 
 gameIsRunning = True
 clock = pygame.time.Clock()
@@ -254,9 +239,9 @@ while gameIsRunning:
             current_level = Level(current_level_number,
                                   SCREEN_WIDTH, SCREEN_HEIGHT)
             current_level.reset_player_position(player)
-            
+
+    # Reset level 4        
     if pygame.sprite.spritecollideany(player, current_level.enemy_group):
-        # Reset level 4
         current_level = Level(4, SCREEN_WIDTH, SCREEN_HEIGHT)
         player.rect.center = (100, SCREEN_HEIGHT - 150)  # Reset player position
         score = 15  # Subtract collected coins from score
@@ -270,10 +255,9 @@ while gameIsRunning:
     display_score(screen, SCREEN_WIDTH, score)
     display_commands(screen)
     
-    # Draw winner text last if applicable
     if current_level.winner and current_level.level_number == 4:
-        font = pygame.font.Font(None, 72)  # Adjust the font size as needed
-        winner_text = font.render("You Win!", True, (255, 255, 0))  # Bright yellow text
+        font = pygame.font.Font(None, 72)
+        winner_text = font.render("You Win!", True, (255, 255, 0))
         text_rect = winner_text.get_rect(center=(SCREEN_WIDTH // 2, SCREEN_HEIGHT // 2))
         screen.blit(winner_text, text_rect)
 

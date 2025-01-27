@@ -192,9 +192,21 @@ def handle_input(player):
 
 def display_commands(screen):
     font = pygame.font.Font(None, 36)
-    text = font.render(
-        'Move with arrow keys, jump with space, run with z + arrow key. Collect all the coins and move to the right edge.', True, (255, 255, 255))
-    screen.blit(text, (50, 10))
+    text = 'Move with arrow keys, jump with space, run with z + arrow key. Collect all the coins and move to the right edge.'
+    
+    # Render the main text
+    main_text = font.render(text, True, (255, 255, 255))
+    
+    # Render the stroke (black text) with offsets
+    stroke_color = (0, 0, 0)  # Black
+    offsets = [(-1, -1), (-1, 1), (1, -1), (1, 1)]  # Top-left, top-right, bottom-left, bottom-right
+    for offset in offsets:
+        stroke_text = font.render(text, True, stroke_color)
+        screen.blit(stroke_text, (50 + offset[0], 10 + offset[1]))
+    
+    # Draw the main text on top
+    screen.blit(main_text, (50, 10))
+
 
 
 # Main loop

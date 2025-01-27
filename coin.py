@@ -28,9 +28,20 @@ class Coin(pygame.sprite.Sprite):
 
 def display_score(screen, SCREEN_WIDTH, score):
     font = pygame.font.Font(None, 36)  # Use default font and size
-    # Render score as white text
-    score_text = font.render(f'Score: {score}', True, (255, 255, 255))
-    screen.blit(score_text, (SCREEN_WIDTH - 150, 10))  # Position at top right
+    text = f'Score: {score}'
+
+    # Render the main text
+    main_text = font.render(text, True, (255, 255, 255))
+    
+    # Render the stroke (black text) with offsets
+    stroke_color = (0, 0, 0)  # Black
+    offsets = [(-1, -1), (-1, 1), (1, -1), (1, 1)]  # Top-left, top-right, bottom-left, bottom-right
+    for offset in offsets:
+        stroke_text = font.render(text, True, stroke_color)
+        screen.blit(stroke_text, (SCREEN_WIDTH - 150 + offset[0], 10 + offset[1]))
+    
+    # Draw the main text on top
+    screen.blit(main_text, (SCREEN_WIDTH - 150, 10))  # Position at top right
 
 def display_winner(screen, SCREEN_WIDTH, SCREEN_HEIGHT):
     font = pygame.font.Font("assets/win-font.ttf", 72)

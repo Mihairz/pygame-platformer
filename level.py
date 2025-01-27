@@ -6,6 +6,19 @@ from enemy import Enemy
 from ground import Ground
 from coin import Coin
 
+# Function to load GIF and extract frames
+def load_gif(filename):
+    gif = Image.open(filename)
+    frames = []
+    try:
+        while True:
+                frames.append(pygame.image.fromstring(
+                gif.tobytes(), gif.size, gif.mode))
+                gif.seek(gif.tell() + 1)
+    except EOFError:
+            frames.remove(frames[0])
+            pass  # End of frames
+            return frames
 
 class Level:
     def __init__(self, level_number, screen_width, screen_height):
@@ -20,8 +33,7 @@ class Level:
         self.ground = Ground(0, screen_height - 100,
                              screen_width, 100, self.ground_image, 28)
         
-        self.platform_image = pygame.Surface((200, 20))
-        self.platform_image.fill((200, 100, 50))  # Brown color for platforms
+        self.platform_image = pygame.image.load("assets/platform.png")
 
         self.platforms = pygame.sprite.Group()
         if level_number == 2:
@@ -36,25 +48,10 @@ class Level:
 
             self.platforms.add(moving_platform_h, moving_platform_v)
         if self.level_number == 4:
-            platform1 = Ground(200, screen_height - 400, 150, 20, self.ground_image, 20, move_type="horizontal", move_range=200, move_speed=2)
-            platform2 = Ground(500, screen_height - 300, 150, 20, self.ground_image, 20, move_type="vertical", move_range=100, move_speed=2)
-            platform3 = Ground(800, screen_height - 400, 150, 20, self.ground_image, 20, move_type="horizontal", move_range=200, move_speed=2)
+            platform1 = Ground(200, screen_height - 400, 150, 20, self.platform_image, 20, move_type="horizontal", move_range=200, move_speed=2)
+            platform2 = Ground(500, screen_height - 300, 150, 20, self.platform_image, 20, move_type="vertical", move_range=100, move_speed=2)
+            platform3 = Ground(800, screen_height - 400, 150, 20, self.platform_image, 20, move_type="horizontal", move_range=200, move_speed=2)
             self.platforms.add(platform1, platform2, platform3)
-
-
-        # Function to load GIF and extract frames
-        def load_gif(filename):
-            gif = Image.open(filename)
-            frames = []
-            try:
-                while True:
-                    frames.append(pygame.image.fromstring(
-                        gif.tobytes(), gif.size, gif.mode))
-                    gif.seek(gif.tell() + 1)
-            except EOFError:
-                frames.remove(frames[0])
-                pass  # End of frames
-            return frames
 
         coin_image = load_gif("assets/coin-gif.gif")
 
@@ -125,6 +122,13 @@ class Level:
         
         self.enemy_group = pygame.sprite.Group()
         self.enemy_spawn_timer = 0  # Initialize the timer
+        
+        # Load arrow image
+        self.arrow_image = pygame.image.load("assets/right-arrow.png")
+        self.arrow_image = pygame.transform.scale(self.arrow_image, (150, 150))
+        self.arrow_rect = self.arrow_image.get_rect()
+        self.arrow_rect.right = screen_width - 20
+        self.arrow_rect.centery = screen_height // 2
 
 
     def draw(self, screen):
@@ -134,6 +138,9 @@ class Level:
         self.coins.draw(screen)
         self.enemy_group.draw(screen)
         
+        if len(self.coins) == 0 and self.level_number != 4:
+            screen.blit(self.arrow_image, self.arrow_rect)
+        
     def update(self):
         self.platforms.update()  # Update platform movements
         
@@ -141,7 +148,7 @@ class Level:
             self.enemy_spawn_timer += 1  # Add delta time or frame interval
             
             if self.enemy_spawn_timer >= 100:  # 2000ms = 2 seconds
-                enemy = Enemy(self.screen_width, self.screen_height - 220, speed=3)
+                enemy = Enemy(self.screen_width, self.screen_height - 150, speed=3)
                 self.enemy_group.add(enemy)
                 self.enemy_spawn_timer = 0  # Reset the timer
          # Update enemies

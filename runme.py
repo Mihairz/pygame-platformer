@@ -193,7 +193,7 @@ def handle_input(player):
 def display_commands(screen):
     font = pygame.font.Font(None, 36)
     text = font.render(
-        'Move with arrow keys, jump with space, run with z + arrow key.', True, (255, 255, 255))
+        'Move with arrow keys, jump with space, run with z + arrow key. Collect all the coins and move to the right edge.', True, (255, 255, 255))
     screen.blit(text, (50, 10))
 
 

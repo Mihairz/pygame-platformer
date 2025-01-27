@@ -54,12 +54,11 @@ class Level:
             self.platforms.add(platform1, platform2, platform3)
 
         coin_image = load_gif("assets/coin-gif.gif")
-
         # Generate coins
         self.coins = pygame.sprite.Group()
         for i in range(5):
             if level_number == 1:
-                # Coins in a straight line for level 1
+                # Coins in a straight line
                 x = 100 + i * 300
                 y = screen_height - 150
             elif level_number == 2:
@@ -78,32 +77,27 @@ class Level:
                     x = 300 + i * 200  # Above the moving vertical platform
                     y = screen_height - 650
             elif level_number == 4:
-                for i in range(5):  # Always 5 coins
+                for i in range(5):
                     if i == 0:
-                    # First coin on the first moving platform
                         x = 220
-                        y = screen_height - 450  # Positioned on the first horizontal platform
+                        y = screen_height - 450  # On the first horizontal platform
                     elif i == 1:
-                        # Second coin on the middle vertical platform
                         x = 550
-                        y = screen_height - 350  # Positioned on the vertical platform
+                        y = screen_height - 350  # On the vertical platform
                     elif i == 2:
-                        # Third coin on the last horizontal platform
                         x = 820
-                        y = screen_height - 450  # Positioned on the last horizontal platform
+                        y = screen_height - 450  # On the last horizontal platform
                     elif i == 3:
-                        # Fourth coin high above the vertical platform
                         x = 550
-                        y = screen_height - 500  # Positioned even higher than the middle platform
+                        y = screen_height - 500  # Highest
                     elif i == 4:
-                        # Fifth coin on the ground level, near enemies
-                        x = random.randint(200, screen_width - 200)  # Randomized ground position
+                        x = random.randint(200, screen_width - 200)  # Near enemies
                         y = screen_height - 150
                         
             coin = Coin(coin_image, x, y)
             self.coins.add(coin)
 
-        # Load level-specific background (optional)
+        # Level-specific background
         match (level_number):
             case 1:
                 self.background_image = pygame.image.load("assets/background.jpg")
@@ -121,7 +115,7 @@ class Level:
             self.background_image, (screen_width, screen_height))
         
         self.enemy_group = pygame.sprite.Group()
-        self.enemy_spawn_timer = 0  # Initialize the timer
+        self.enemy_spawn_timer = 0
         
         # Load arrow image
         self.arrow_image = pygame.image.load("assets/right-arrow.png")
@@ -142,25 +136,22 @@ class Level:
             screen.blit(self.arrow_image, self.arrow_rect)
         
     def update(self):
-        self.platforms.update()  # Update platform movements
+        self.platforms.update()
         
         if not self.winner and self.level_number == 4:
-            self.enemy_spawn_timer += 1  # Add delta time or frame interval
+            self.enemy_spawn_timer += 1
             
-            if self.enemy_spawn_timer >= 100:  # 2000ms = 2 seconds
+            if self.enemy_spawn_timer >= 100:  # ms
                 enemy = Enemy(self.screen_width, self.screen_height - 150, speed=3)
                 self.enemy_group.add(enemy)
-                self.enemy_spawn_timer = 0  # Reset the timer
-         # Update enemies
+                self.enemy_spawn_timer = 0
         self.enemy_group.update()
         
-         # Handle coin animations (if animated)
         for coin in self.coins:
             coin.update()
         if len(self.coins) == 0:
             self.winner = True
             self.enemy_group.empty()
-
 
     def reset_player_position(self, player):
         player.rect.center = (100, 890)

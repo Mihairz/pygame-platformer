@@ -26,8 +26,8 @@ class Enemy(pygame.sprite.Sprite):
     def __init__(self, x, y, speed):
         super().__init__()
         
-        self.standing_frames = enemy_frames
-        self.frames = self.standing_frames
+        self.enemy_frames = enemy_frames
+        self.frames = self.enemy_frames
         self.current_frame = 0
         self.image = self.frames[self.current_frame]
         self.animation_speed = 100  # Speed in ms
@@ -41,10 +41,9 @@ class Enemy(pygame.sprite.Sprite):
         self.rect.x -= self.speed
         
         now = pygame.time.get_ticks()
-        if now - self.last_update > self.animation_speed:  # Change frame every 100 ms
-            # Loop through frames
+        if now - self.last_update > self.animation_speed:
             self.current_frame = (self.current_frame + 1) % len(self.frames)
-            self.image = self.frames[self.current_frame]  # Update image
+            self.image = self.frames[self.current_frame]
             self.last_update = now
 
         # Remove enemy if it goes off-screen
